@@ -58,7 +58,6 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	// has all the "say" args (sanity checking)
 	if ((cmd == GAME_CONSOLE_COMMAND || cmd == GAME_CLIENT_COMMAND)) {
 		g_sayflag = 0;
-		QMM_RET_IGNORED(1);
 	}
 
 	// hook client console commands
