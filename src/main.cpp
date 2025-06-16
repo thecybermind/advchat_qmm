@@ -77,13 +77,11 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 }
 
 C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
-#ifndef GAME_NO_G_LOCATE_GAME_DATA
 	// store player/entity information
 	if (cmd == G_LOCATE_GAME_DATA) {
 		g_gents = (gentity_t*)args[0];
 		g_gentsize = args[2];
 	}
-#endif
 
 	// this is the main workhorse
 	// whenever the mod calls trap_Argv for a say command, this checks each argument for the
@@ -142,12 +140,6 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 }
 
 C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
-#ifdef GAME_NO_G_LOCATE_GAME_DATA
-	if (cmd == GAME_INIT) {
-		g_gents = *(gentity_t**)g_vmMain(GAMEVP_EDICTS);
-		g_gentsize = *(int*)g_vmMain(GAMEV_EDICT_SIZE);
-	}
-#endif
 	QMM_RET_IGNORED(1);
 }
 
