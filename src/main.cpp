@@ -19,7 +19,7 @@ Created By:
 #include <string>
 #include <string.h>
 
-pluginres_t* g_result = NULL;
+pluginres_t* g_result = nullptr;
 plugininfo_t g_plugininfo = {
 	QMM_PIFV_MAJOR,									// plugin interface version major
 	QMM_PIFV_MINOR,									// plugin interface version minor
@@ -29,20 +29,22 @@ plugininfo_t g_plugininfo = {
 	ADVCHAT_QMM_BUILDER,							// author of plugin
 	"https://github.com/thecybermind/qadmin_qmm",	// website of plugin
 };
-eng_syscall_t g_syscall = NULL;
-mod_vmMain_t g_vmMain = NULL;
-pluginfuncs_t* g_pluginfuncs = NULL;
-pluginvars_t* g_pluginvars = NULL;
+eng_syscall_t g_syscall = nullptr;
+mod_vmMain_t g_vmMain = nullptr;
+pluginfuncs_t* g_pluginfuncs = nullptr;
+pluginvars_t* g_pluginvars = nullptr;
 
-gentity_t* g_gents = NULL;
+gentity_t* g_gents = nullptr;
 intptr_t g_gentsize = sizeof(gentity_t);
 
 intptr_t g_sayflag = 0;
 intptr_t g_sayclient = 0;
 
+
 C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 	QMM_GIVE_PINFO();
 }
+
 
 C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, pluginvars_t* pluginvars) {
 	QMM_SAVE_VARS();
@@ -50,8 +52,10 @@ C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginre
 	return 1;
 }
 
+
 C_DLLEXPORT void QMM_Detach() {
 }
+
 
 C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	// cancel arg checking if a new command is entered before this plugin thinks it
@@ -75,6 +79,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 
 	QMM_RET_IGNORED(1);
 }
+
 
 C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 	// store player/entity information
@@ -139,9 +144,11 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 	QMM_RET_IGNORED(1);
 }
 
+
 C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 	QMM_RET_IGNORED(1);
 }
+
 
 C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 	QMM_RET_IGNORED(1);
