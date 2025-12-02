@@ -41,6 +41,14 @@ intptr_t g_sayflag = 0;
 intptr_t g_sayclient = 0;
 
 
+// "safe" strncpy that always null-terminates
+char* strncpyz(char* dest, const char* src, std::size_t count) {
+	char* ret = strncpy(dest, src, count);
+	dest[count - 1] = '\0';
+	return ret;
+}
+
+
 C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 	QMM_GIVE_PINFO();
 }
@@ -113,8 +121,7 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 				*replace = '\0';
 
 				// form new string with the token replaced
-				strncpy(buf, QMM_VARARGS("%s%d%s", buf, health, replace + 2), buflen);
-				buf[buflen - 1] = '\0';
+				strncpyz(buf, QMM_VARARGS("%s%d%s", buf, health, replace + 2), buflen);
 
 				// look for another token
 				replace = strstr(buf, "$h");
@@ -125,9 +132,13 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 			int armor = ENT_FROM_NUM(g_sayclient)->client->ps.stats[STAT_ARMOR];
 			replace = strstr(buf, "$a");
 			while (replace) {
+				// stop 'buf' from being read past the token
 				*replace = '\0';
-				strncpy(buf, QMM_VARARGS("%s%d%s", buf, armor, replace + 2), buflen);
-				buf[buflen - 1] = '\0';
+
+				// form new string with the token replaced
+				strncpyz(buf, QMM_VARARGS("%s%d%s", buf, armor, replace + 2), buflen);
+
+				// look for another token
 				replace = strstr(buf, "$a");
 			}
 #endif
