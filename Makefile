@@ -2,13 +2,11 @@
 # Copyright 2004-2025
 # https://github.com/thecybermind/advchat_qmm/
 # 3-clause BSD license: https://opensource.org/license/bsd-3-clause
-# Created By: Kevin Masterson < cybermind@gmail.com >
+# Created By: Kevin Masterson < k.m.masterson@gmail.com >
 
 BIN_32 := advchat_qmm
 BIN_64 := advchat_qmm_x86_64
-GAMES := Q3A RTCWMP RTCWSP WET JK2MP JAMP STVOYHM STEF2 SOF2MP MOHAA MOHSH MOHBT QUAKE2
-
-
+GAMES := COD11MP CODMP CODUOMP JAMP JASP JK2MP JK2SP MOHAA MOHBT MOHSH Q3A QUAKE2 RTCWMP RTCWSP SIN SOF2MP STEF2 STVOYHM STVOYSP WET
 
 CC := g++
 
