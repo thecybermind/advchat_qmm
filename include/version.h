@@ -5,7 +5,7 @@ https://github.com/thecybermind/advchat_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
 Created By:
-    Kevin Masterson < cybermind@gmail.com >
+    Kevin Masterson < k.m.masterson@gmail.com >
 
 */
 
@@ -16,8 +16,8 @@ Created By:
 #define STRINGIFY2(x) #x
 
 #define ADVCHAT_QMM_VERSION_MAJOR	2
-#define ADVCHAT_QMM_VERSION_MINOR	1
-#define ADVCHAT_QMM_VERSION_REV	0
+#define ADVCHAT_QMM_VERSION_MINOR	4
+#define ADVCHAT_QMM_VERSION_REV	    0
 
 #define ADVCHAT_QMM_VERSION		STRINGIFY(ADVCHAT_QMM_VERSION_MAJOR) "." STRINGIFY(ADVCHAT_QMM_VERSION_MINOR) "." STRINGIFY(ADVCHAT_QMM_VERSION_REV)
 

@@ -5,7 +5,7 @@ https://github.com/thecybermind/advchat_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 
 Created By:
-    Kevin Masterson < cybermind@gmail.com >
+    Kevin Masterson < k.m.masterson@gmail.com >
 
 */
 
@@ -28,6 +28,7 @@ plugininfo_t g_plugininfo = {
 	"Advanced Chat Features",						// description of plugin
 	ADVCHAT_QMM_BUILDER,							// author of plugin
 	"https://github.com/thecybermind/qadmin_qmm",	// website of plugin
+	"ADVCHAT",										// logtag of plugin
 };
 eng_syscall_t g_syscall = nullptr;
 mod_vmMain_t g_vmMain = nullptr;
@@ -35,7 +36,7 @@ pluginfuncs_t* g_pluginfuncs = nullptr;
 pluginvars_t* g_pluginvars = nullptr;
 
 gentity_t* g_gents = nullptr;
-intptr_t g_gentsize = sizeof(gentity_t);
+intptr_t g_gentsize = 0;
 
 intptr_t g_sayflag = 0;
 intptr_t g_sayclient = 0;
@@ -76,7 +77,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	if (cmd == GAME_CLIENT_COMMAND) {
 		// check what command it is
 		char buf[16];
-		QMM_ARGV(0, buf, sizeof(buf));
+		QMM_ARGV(PLID, 0, buf, sizeof(buf));
 
 		// player is using a say command, set global flags
 		if (!strncmp(buf, "say", 3)) {
@@ -106,7 +107,7 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 			intptr_t argnum = args[0];
 			char* buf = (char*)args[1];
 			intptr_t buflen = args[2];
-			QMM_ARGV(argnum, buf, sizeof(buf));
+			QMM_ARGV(PLID, argnum, buf, sizeof(buf));
 
 #ifdef GAME_HAS_STAT_HEALTH
 			int health = ENT_FROM_NUM(g_sayclient)->client->ps.stats[STAT_HEALTH];
@@ -121,7 +122,7 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 				*replace = '\0';
 
 				// form new string with the token replaced
-				strncpyz(buf, QMM_VARARGS("%s%d%s", buf, health, replace + 2), buflen);
+				strncpyz(buf, QMM_VARARGS(PLID, "%s%d%s", buf, health, replace + 2), buflen);
 
 				// look for another token
 				replace = strstr(buf, "$h");
@@ -136,7 +137,7 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 				*replace = '\0';
 
 				// form new string with the token replaced
-				strncpyz(buf, QMM_VARARGS("%s%d%s", buf, armor, replace + 2), buflen);
+				strncpyz(buf, QMM_VARARGS(PLID, "%s%d%s", buf, armor, replace + 2), buflen);
 
 				// look for another token
 				replace = strstr(buf, "$a");
