@@ -103,11 +103,22 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 	if (cmd == G_ARGV) {
 		// if this is an argument for a say command
 		if (g_sayflag) {
-			// run the function normally, using the mod-given buffer/size
 			intptr_t argnum = args[0];
+#ifdef GAME_ARGV_RETURN
+			// this engine returns a buffer to the mod, so we have to use our own
+			static char buffers[MAX_INFO_STRING][8];
+			static int index = 0;
+			// cycle rotating buffer and clear string
+			index = (index + 1) % 8;
+			char* buf = buffers[index];
+			intptr_t buflen = MAX_INFO_STRING;
+			memset(buf, 0, buflen);
+#else
+			// this engine uses a mod-given buffer/size
 			char* buf = (char*)args[1];
 			intptr_t buflen = args[2];
-			QMM_ARGV(PLID, argnum, buf, sizeof(buf));
+#endif
+			QMM_ARGV(PLID, argnum, buf, buflen);
 
 #ifdef GAME_HAS_STAT_HEALTH
 			int health = ENT_FROM_NUM(g_sayclient)->client->ps.stats[STAT_HEALTH];
@@ -149,7 +160,9 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 				g_sayflag = 0;
 
 			// NEVER let this go through for say command args
-			QMM_RET_SUPERCEDE(1);
+			// if this game engine returns a buffer, we need to return ours
+			// otherwise, return value doesn't matter
+			QMM_RET_SUPERCEDE((intptr_t)buf);
 		}
 	}
 
