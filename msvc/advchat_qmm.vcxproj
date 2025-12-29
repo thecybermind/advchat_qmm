@@ -121,10 +121,6 @@
       <Configuration>Debug-MOHSH</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-Q2R|x64">
-      <Configuration>Debug-Q2R</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-Q3A|x64">
       <Configuration>Debug-Q3A</Configuration>
       <Platform>x64</Platform>
@@ -283,10 +279,6 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-MOHSH|x64">
       <Configuration>Release-MOHSH</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-Q2R|x64">
-      <Configuration>Release-Q2R</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-Q3A|x64">
@@ -468,9 +460,6 @@
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-MOHSH'))==true">
     <TargetName>$(ProjectName)_x86_64_MOHSH</TargetName>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-Q2R'))==true">
-    <TargetName>$(ProjectName)_x86_64_Q2R</TargetName>
-  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-Q3A'))==true">
     <TargetName>$(ProjectName)_x86_64_Q3A</TargetName>
   </PropertyGroup>
@@ -588,11 +577,6 @@
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-MOHSH'))==true">
     <ClCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_MOHSH</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-Q2R'))==true">
-    <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_Q2R</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-Q3A'))==true">
