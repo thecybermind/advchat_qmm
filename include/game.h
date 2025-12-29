@@ -77,13 +77,6 @@ Created By:
     #define GAME_ARGV_RETURN 1
 	#define GAME_HAS_ARGS 1
     #define GAME_CLIENT_COMMAND_HAS_ENT 1
-#elif defined(GAME_Q2R)
-    #include <q2r/rerelease/g_local.h>
-    #include <game_q2r.h>
-    #define GAME_Q2_ENGINE
-    #define GAME_ARGV_RETURN 1
-	#define GAME_HAS_ARGS 1
-    #define GAME_CLIENT_COMMAND_HAS_ENT 1
 #elif defined(GAME_Q3A)
     #include <q3a/game/g_local.h>
 #elif defined(GAME_RTCWMP)
