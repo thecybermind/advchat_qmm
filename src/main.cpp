@@ -164,7 +164,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 		}
 	}
 
-	QMM_RET_IGNORED(1);
+	QMM_RET_IGNORED(0);
 }
 
 
