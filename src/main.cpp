@@ -151,8 +151,8 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 		char buf[16];
 		QMM_ARGV(PLID, 0, buf, sizeof(buf));
 
-		// player is using a say command, set global flag
-		if (!strncmp(buf, "say", 3)) {
+		// player is using a say command, set global flag ("dmmessage" is MOHAA)
+		if (!strncmp(buf, "say", 3) || !strncmp(buf, "dmmessage", 9)) {
 			intptr_t clientNum = args[0];
 			// some engines (quake 2-based games mostly) pass entity pointer to GAME_CLIENT_ messages instead of a number
 			if (clientNum > MAX_CLIENTS)
