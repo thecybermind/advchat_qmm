@@ -215,7 +215,6 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 		QMM_RET_SUPERCEDE((intptr_t)buf);
 	}
 
-#ifdef GAME_HAS_ARGS
 	// whenever the mod calls Args() for a say command, this checks each argument for the
 	// existence of a replacable token (like "$h") and then replaces all instances of them
 	else if (cmd == G_ARGS && g_sayentity) {
@@ -245,7 +244,6 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 		// return our modified string
 		QMM_RET_SUPERCEDE((intptr_t)buf);
 	}
-#endif // GAME_HAS_ARGS
 
 	QMM_RET_IGNORED(0);
 }
