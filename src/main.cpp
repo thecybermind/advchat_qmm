@@ -154,13 +154,11 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 		// player is using a say command, set global flag
 		if (!strncmp(buf, "say", 3)) {
 			intptr_t clientNum = args[0];
-#ifdef GAME_CLIENT_COMMAND_HAS_ENT
-			// direct entity pointer to the player
-			g_sayentity = (gentity_t*)clientNum;
-#else
-			// players are the first entities, so clientNum is a direct entity index as well
-			g_sayentity = ENT_FROM_NUM(clientNum);
-#endif
+			// some engines (quake 2-based games mostly) pass entity pointer to GAME_CLIENT_ messages instead of a number
+			if (clientNum > MAX_CLIENTS)
+				g_sayentity = (gentity_t*)clientNum;
+			else
+				g_sayentity = ENT_FROM_NUM(clientNum);
 		}
 	}
 
@@ -175,30 +173,38 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 		g_gentsize = args[2];
 	}
 
-	// this is the main workhorse
-	// whenever the mod calls trap_Argv for a say command, this checks each argument for the
+	QMM_RET_IGNORED(0);
+}
+
+
+C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
+	// cancel arg checking once the mod is done with command-handling
+	if ((cmd == GAME_CONSOLE_COMMAND || cmd == GAME_CLIENT_COMMAND)) {
+		g_sayentity = nullptr;
+	}
+
+	QMM_RET_IGNORED(0);
+}
+
+
+C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
+#ifdef GAME_ARGV_RETURN
+	// this is the main workhorse for games where G_ARGV returns a buffer
+	// whenever the mod calls G_ARGV for a say command, this checks each argument for the
 	// existence of a replacable token (like "$h") and then replaces all instances of them
-	else if (cmd == G_ARGV && g_sayentity) {
+	if (cmd == G_ARGV && g_sayentity) {
 		// how many replacements we made
 		int replaced = 0;
-		
-		intptr_t argnum = args[0];
-		// skip if this is the command itself
-		if (argnum == 0)
-			QMM_RET_IGNORED(0);
 
-#ifdef GAME_ARGV_RETURN
+		intptr_t argnum = args[0];
+
 		// this engine returns a buffer to the mod, so we have to use our own
 		// cycle rotating buffer and clear string
 		bufindex = (bufindex + 1) % NUM_BUFFERS;
 		char* buf = buffers[bufindex];
 		intptr_t buflen = sizeof(buffers[bufindex]);
 		memset(buf, 0, buflen);
-#else
-		// this engine uses a mod-given buffer/size
-		char* buf = (char*)args[1];
-		intptr_t buflen = args[2];
-#endif
+
 		// read arg into buf regardless of engine
 		QMM_ARGV(PLID, argnum, buf, buflen);
 
@@ -210,17 +216,39 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 		replaced += replace_var_int(buf, buflen, "$a", get_player_armor());
 #endif
 
-		// if this game engine returns a buffer, we need to return our buffer. otherwise, return value doesn't matter
-		// if this is a game with mod-given buffer, we supercede so the engine doesn't overwrite the buffer
-		QMM_RET_SUPERCEDE((intptr_t)buf);
+		// if we didn't change anything, ignore and let the engine return its own buffer
+		if (!replaced)
+			QMM_RET_IGNORED(0);
+
+		// we did change something, so we need to return our buffer to the mod
+		QMM_RET_OVERRIDE((intptr_t)buf);
 	}
+#else // GAME_ARGV_RETURN
+	// this is the main workhorse for games where G_ARGV fills in a mod-given buffer
+	// whenever the mod calls G_ARGV for a say command, this checks each argument for the
+	// existence of a replacable token (like "$h") and then replaces all instances of them
+	if (cmd == G_ARGV && g_sayentity) {
+		intptr_t argnum = args[0];
+		char* buf = (char*)args[1];
+		intptr_t buflen = args[2];
+
+		// check for "$h" tokens, replace with health
+		replace_var_int(buf, buflen, "$h", get_player_health());
+
+#ifndef GAME_NO_ARMOR
+		// check for "$a" tokens, replace with armor
+		replace_var_int(buf, buflen, "$a", get_player_armor());
+#endif
+	}
+#endif  // !GAME_ARGV_RETURN
 
 	// whenever the mod calls Args() for a say command, this checks each argument for the
 	// existence of a replacable token (like "$h") and then replaces all instances of them
+	// Args() which returns all command arguments after arg 0
 	else if (cmd == G_ARGS && g_sayentity) {
 		int replaced = 0;
 
-		// this engine returns a buffer to the mod, so we have to use our own
+		// G_ARGS returns a buffer to the mod, so we have to use our own
 		// cycle rotating buffer and clear string
 		bufindex = (bufindex + 1) % 8;
 		char* buf = buffers[bufindex];
@@ -242,23 +270,8 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 			QMM_RET_IGNORED(0);
 
 		// return our modified string
-		QMM_RET_SUPERCEDE((intptr_t)buf);
+		QMM_RET_OVERRIDE((intptr_t)buf);
 	}
 
-	QMM_RET_IGNORED(0);
-}
-
-
-C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
-	// cancel arg checking once the mod is done with command-handling
-	if ((cmd == GAME_CONSOLE_COMMAND || cmd == GAME_CLIENT_COMMAND)) {
-		g_sayentity = nullptr;
-	}
-
-	QMM_RET_IGNORED(0);
-}
-
-
-C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 	QMM_RET_IGNORED(0);
 }

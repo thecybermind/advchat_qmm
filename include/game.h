@@ -55,7 +55,6 @@ Created By:
     #define GAME_NO_ARMOR
     #define GAME_HAS_STAT_HEALTH
     #define GAME_ARGV_RETURN
-    #define GAME_CLIENT_COMMAND_HAS_ENT
 #elif defined(GAME_MOHBT)
     #include <mohaa/fgame/g_local.h>
     #include <mohaa/fgame/bg_public.h>
@@ -63,7 +62,6 @@ Created By:
     #define GAME_NO_ARMOR
     #define GAME_HAS_STAT_HEALTH
     #define GAME_ARGV_RETURN
-    #define GAME_CLIENT_COMMAND_HAS_ENT
 #elif defined(GAME_MOHSH)
     #include <mohsh/fgame/g_local.h>
     #include <mohsh/fgame/bg_public.h>
@@ -71,13 +69,11 @@ Created By:
     #define GAME_NO_ARMOR
     #define GAME_HAS_STAT_HEALTH
     #define GAME_ARGV_RETURN
-    #define GAME_CLIENT_COMMAND_HAS_ENT
 #elif defined(GAME_QUAKE2)
     #include <quake2/game/g_local.h>
     #include <game_quake2.h>
     #define GAME_Q2_ENGINE
     #define GAME_ARGV_RETURN
-    #define GAME_CLIENT_COMMAND_HAS_ENT
 #elif defined(GAME_Q3A)
     #include <q3a/game/g_local.h>
     #include <game_q3a.h>
@@ -93,7 +89,6 @@ Created By:
     #define GAME_Q2_ENGINE
     #define GAME_HAS_STAT_HEALTH
     #define GAME_ARGV_RETURN
-    #define GAME_CLIENT_COMMAND_HAS_ENT
 #elif defined(GAME_SOF2MP)
     #include <sof2mp/game/g_local.h>
     #include <game_sof2mp.h>
@@ -104,7 +99,6 @@ Created By:
     #define GAME_NO_ARMOR
     #define GAME_HAS_STAT_HEALTH
     #define GAME_ARGV_RETURN
-    #define GAME_CLIENT_COMMAND_HAS_ENT
 #elif defined(GAME_STVOYHM)
     #include <stvoyhm/game/g_local.h>
     #include <game_stvoyhm.h>
