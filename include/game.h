@@ -72,7 +72,6 @@ Created By:
 #elif defined(GAME_QUAKE2)
     #include <quake2/game/g_local.h>
     #include <game_quake2.h>
-    #define GAME_Q2_ENGINE
     #define GAME_ARGV_RETURN
 #elif defined(GAME_Q3A)
     #include <q3a/game/g_local.h>
@@ -86,7 +85,6 @@ Created By:
 #elif defined(GAME_SIN)
     #include <sin/game/g_local.h>
     #include <game_sin.h>
-    #define GAME_Q2_ENGINE
     #define GAME_HAS_STAT_HEALTH
     #define GAME_ARGV_RETURN
 #elif defined(GAME_SOF2MP)
