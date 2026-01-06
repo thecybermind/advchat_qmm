@@ -58,7 +58,8 @@ char* strncpyz(char* dest, const char* src, std::size_t count) {
 // scan buf for var, replace with int value
 int replace_var_int(char* buf, intptr_t buflen, const char* var, intptr_t value) {
 	int total = 0;
-	
+	int varlen = strlen(var);
+
 	// check for var token
 	char* replace = strstr(buf, var);
 	// this argument contains at least one token
@@ -67,7 +68,7 @@ int replace_var_int(char* buf, intptr_t buflen, const char* var, intptr_t value)
 		*replace = '\0';
 
 		// form new string with the token replaced
-		strncpyz(buf, QMM_VARARGS(PLID, "%s%d%s", buf, value, replace + 2), buflen);
+		strncpyz(buf, QMM_VARARGS(PLID, "%s%d%s", buf, value, replace + varlen), buflen);
 		total++;
 
 		// look for another token
@@ -81,7 +82,8 @@ int replace_var_int(char* buf, intptr_t buflen, const char* var, intptr_t value)
 // scan buf for var, replace with string value
 int replace_var_str(char* buf, intptr_t buflen, const char* var, const char* value) {
 	int total = 0;
-	
+	int varlen = strlen(var);
+
 	// check for var token
 	char* replace = strstr(buf, var);
 	// this argument contains at least one token
@@ -90,7 +92,7 @@ int replace_var_str(char* buf, intptr_t buflen, const char* var, const char* val
 		*replace = '\0';
 
 		// form new string with the token replaced
-		strncpyz(buf, QMM_VARARGS(PLID, "%s%s%s", buf, value, replace + 2), buflen);
+		strncpyz(buf, QMM_VARARGS(PLID, "%s%s%s", buf, value, replace + varlen), buflen);
 		total++;
 
 		// look for another token
@@ -121,6 +123,22 @@ int get_player_armor() {
 	return client ? client->ps.stats[STAT_ARMOR] : 0;
 }
 #endif
+
+
+// single point to do all variable replacements
+int replace_vars(char* buf, intptr_t buflen) {
+	int replaced = 0;
+
+	// check for "$h" tokens, replace with health
+	replaced += replace_var_int(buf, buflen, "$h", get_player_health());
+
+#ifndef GAME_NO_ARMOR
+	// check for "$a" tokens, replace with armor
+	replaced += replace_var_int(buf, buflen, "$a", get_player_armor());
+#endif
+
+	return replaced;
+}
 
 
 C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
@@ -193,9 +211,6 @@ C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 	// whenever the mod calls G_ARGV for a say command, this checks each argument for the
 	// existence of a replacable token (like "$h") and then replaces all instances of them
 	if (cmd == G_ARGV && g_sayentity) {
-		// how many replacements we made
-		int replaced = 0;
-
 		intptr_t argnum = args[0];
 
 		// this engine returns a buffer to the mod, so we have to use our own
@@ -208,16 +223,8 @@ C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 		// read arg into buf regardless of engine
 		QMM_ARGV(PLID, argnum, buf, buflen);
 
-		// check for "$h" tokens, replace with health
-		replaced += replace_var_int(buf, buflen, "$h", get_player_health());
-
-#ifndef GAME_NO_ARMOR
-		// check for "$a" tokens, replace with armor
-		replaced += replace_var_int(buf, buflen, "$a", get_player_armor());
-#endif
-
 		// if we didn't change anything, ignore and let the engine return its own buffer
-		if (!replaced)
+		if (!replace_vars(buf, buflen))
 			QMM_RET_IGNORED(0);
 
 		// we did change something, so we need to return our buffer to the mod
@@ -232,13 +239,7 @@ C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 		char* buf = (char*)args[1];
 		intptr_t buflen = args[2];
 
-		// check for "$h" tokens, replace with health
-		replace_var_int(buf, buflen, "$h", get_player_health());
-
-#ifndef GAME_NO_ARMOR
-		// check for "$a" tokens, replace with armor
-		replace_var_int(buf, buflen, "$a", get_player_armor());
-#endif
+		replace_vars(buf, buflen);
 	}
 #endif  // !GAME_ARGV_RETURN
 
@@ -246,8 +247,6 @@ C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 	// existence of a replacable token (like "$h") and then replaces all instances of them
 	// Args() which returns all command arguments after arg 0
 	else if (cmd == G_ARGS && g_sayentity) {
-		int replaced = 0;
-
 		// G_ARGS returns a buffer to the mod, so we have to use our own
 		// cycle rotating buffer and clear string
 		bufindex = (bufindex + 1) % 8;
@@ -258,15 +257,8 @@ C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 		// read args into buf
 		strncpyz(buf, (char*)g_syscall(G_ARGS), buflen);
 
-		// check for "$h" tokens, replace with health
-		replaced += replace_var_int(buf, buflen, "$h", get_player_health());
-
-#ifndef GAME_NO_ARMOR
-		// check for "$a" tokens, replace with armor
-		replaced += replace_var_int(buf, buflen, "$a", get_player_armor());
-#endif
 		// if we didn't change anything, ignore and let the engine return a buffer
-		if (!replaced)
+		if (!replace_vars(buf, buflen))
 			QMM_RET_IGNORED(0);
 
 		// return our modified string
