@@ -1,6 +1,6 @@
 /*
 ADVCHAT_QMM - Advanced Chat Plugin
-Copyright 2004-2025
+Copyright 2004-2026
 https://github.com/thecybermind/advchat_qmm/
 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 

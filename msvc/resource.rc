@@ -83,7 +83,7 @@ BEGIN
             VALUE "FileDescription", "advchat_qmm " ADVCHAT_QMM_OS " " ADVCHAT_QMM_ARCH "\0"
             VALUE "FileVersion", ADVCHAT_QMM_VERSION "\0"
             VALUE "InternalName", "advchat_qmm\0"
-            VALUE "LegalCopyright", "Copyright 2004-2025\0"
+            VALUE "LegalCopyright", "Copyright 2004-2026\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "advchat_qmm.dll\0"
             VALUE "ProductName", "advchat_qmm\0"
