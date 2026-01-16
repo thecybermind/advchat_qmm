@@ -58,7 +58,7 @@ char* strncpyz(char* dest, const char* src, std::size_t count) {
 // scan buf for var, replace with int value
 int replace_var_int(char* buf, intptr_t buflen, const char* var, intptr_t value) {
 	int total = 0;
-	int varlen = strlen(var);
+	size_t varlen = strlen(var);
 
 	// check for var token
 	char* replace = strstr(buf, var);
@@ -82,7 +82,7 @@ int replace_var_int(char* buf, intptr_t buflen, const char* var, intptr_t value)
 // scan buf for var, replace with string value
 int replace_var_str(char* buf, intptr_t buflen, const char* var, const char* value) {
 	int total = 0;
-	int varlen = strlen(var);
+	size_t varlen = strlen(var);
 
 	// check for var token
 	char* replace = strstr(buf, var);
@@ -148,6 +148,10 @@ C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 
 C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, pluginvars_t* pluginvars) {
 	QMM_SAVE_VARS();
+
+	// make sure this DLL is loaded only in the right engine
+	if (strcmp(QMM_GETGAMEENGINE(PLID), GAME_STR) != 0)
+		return 0;
 
 	return 1;
 }
