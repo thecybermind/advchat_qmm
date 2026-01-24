@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __ADVCHAT_QMM_GAME_H__
-#define __ADVCHAT_QMM_GAME_H__
+#ifndef ADVCHAT_QMM_GAME_H
+#define ADVCHAT_QMM_GAME_H
 
 #if defined(GAME_COD11MP)
     #include <cod11mp/bgame/bg_local.h>
@@ -136,4 +136,4 @@ Created By:
 #error Unknown game engine!	
 #endif
 
-#endif // __ADVCHAT_QMM_GAME_H__
+#endif // ADVCHAT_QMM_GAME_H

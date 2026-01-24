@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __ADVCHAT_QMM_VERSION_H__
-#define __ADVCHAT_QMM_VERSION_H__
+#ifndef ADVCHAT_QMM_VERSION_H
+#define ADVCHAT_QMM_VERSION_H
 
 #define STRINGIFY(x) STRINGIFY2(x)
 #define STRINGIFY2(x) #x
@@ -41,4 +41,4 @@ Created By:
 #define ADVCHAT_QMM_COMPILE		__TIME__ " " __DATE__
 #define ADVCHAT_QMM_BUILDER		"Kevin Masterson"
 
-#endif // __ADVCHAT_QMM_VERSION_H__
+#endif // ADVCHAT_QMM_VERSION_H
