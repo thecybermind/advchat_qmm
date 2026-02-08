@@ -1,12 +1,12 @@
-# ADVCHAT_QMM - Advanced Chat Plugin
+# STUB_QMM - Example QMM Plugin
 # Copyright 2004-2026
-# https://github.com/thecybermind/advchat_qmm/
+# https://github.com/thecybermind/stub_qmm/
 # 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 # Created By: Kevin Masterson < k.m.masterson@gmail.com >
 
 BIN_32 := advchat_qmm
 BIN_64 := advchat_qmm_x86_64
-GAMES := COD11MP CODMP CODUOMP JAMP JASP JK2MP JK2SP MOHAA MOHBT MOHSH Q3A QUAKE2 RTCWMP RTCWSP SIN SOF2MP STEF2 STVOYHM STVOYSP WET
+GAMES := COD11MP CODMP CODUOMP JAMP JASP JK2MP JK2SP MOHAA MOHBT MOHSH Q3A QUAKE2 RTCWMP RTCWSP SIN SOF2MP SOF2SP STEF2 STVOYHM STVOYSP WET
 
 CC := g++
 
