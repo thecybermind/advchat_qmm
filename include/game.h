@@ -106,6 +106,13 @@ Created By:
     #include <sof2mp/game/g_local.h>
     #include <game_sof2mp.h>
     #define GAME_STR "SOF2MP"
+/*
+#elif defined(GAME_SOF2SP)
+    // #include <sof2sp/game/g_local.h>
+    #include <game_sof2sp.h>
+    #define GAME_NO_ARMOR    
+    #define GAME_STR "SOF2SP"
+*/
 #elif defined(GAME_STEF2)
     #include <stef2/game/g_local.h>
     #include <stef2/game/bg_public.h>
