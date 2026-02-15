@@ -68,7 +68,7 @@ int replace_var_int(char* buf, intptr_t buflen, const char* var, intptr_t value)
 		*replace = '\0';
 
 		// form new string with the token replaced
-		strncpyz(buf, QMM_VARARGS(PLID, "%s%d%s", buf, value, replace + varlen), buflen);
+		strncpyz(buf, QMM_VARARGS("%s%d%s", buf, value, replace + varlen), buflen);
 		total++;
 
 		// look for another token
@@ -92,7 +92,7 @@ int replace_var_str(char* buf, intptr_t buflen, const char* var, const char* val
 		*replace = '\0';
 
 		// form new string with the token replaced
-		strncpyz(buf, QMM_VARARGS(PLID, "%s%s%s", buf, value, replace + varlen), buflen);
+		strncpyz(buf, QMM_VARARGS("%s%s%s", buf, value, replace + varlen), buflen);
 		total++;
 
 		// look for another token
@@ -150,7 +150,7 @@ C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginre
 	QMM_SAVE_VARS();
 
 	// make sure this DLL is loaded only in the right engine
-	if (strcmp(QMM_GETGAMEENGINE(PLID), GAME_STR) != 0)
+	if (strcmp(QMM_GETGAMEENGINE(), GAME_STR) != 0)
 		return 0;
 
 	return 1;
@@ -171,7 +171,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	if (cmd == GAME_CLIENT_COMMAND) {
 		// check what command it is
 		char buf[16];
-		QMM_ARGV(PLID, 0, buf, sizeof(buf));
+		QMM_ARGV(0, buf, sizeof(buf));
 
 		// player is using a say command, set global flag ("dmmessage" is MOHAA)
 		if (!strncmp(buf, "say", 3) || !strncmp(buf, "dmmessage", 9)) {
