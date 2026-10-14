@@ -16,29 +16,29 @@ Created By:
 #define STRINGIFY2(x) #x
 
 #define ADVCHAT_QMM_VERSION_MAJOR	2
-#define ADVCHAT_QMM_VERSION_MINOR	6
+#define ADVCHAT_QMM_VERSION_MINOR	7
 #define ADVCHAT_QMM_VERSION_REV	    0
 
-#define ADVCHAT_QMM_VERSION		STRINGIFY(ADVCHAT_QMM_VERSION_MAJOR) "." STRINGIFY(ADVCHAT_QMM_VERSION_MINOR) "." STRINGIFY(ADVCHAT_QMM_VERSION_REV)
+#define ADVCHAT_QMM_VERSION         STRINGIFY(ADVCHAT_QMM_VERSION_MAJOR) "." STRINGIFY(ADVCHAT_QMM_VERSION_MINOR) "." STRINGIFY(ADVCHAT_QMM_VERSION_REV)
 
 #if defined(_WIN32)
-#define ADVCHAT_QMM_OS             "Windows"
+#define ADVCHAT_QMM_OS              "Windows"
 #ifdef _WIN64
-#define ADVCHAT_QMM_ARCH           "x86_64"
+#define ADVCHAT_QMM_ARCH            "x86_64"
 #else
-#define ADVCHAT_QMM_ARCH           "x86"
+#define ADVCHAT_QMM_ARCH            "x86"
 #endif
 #elif defined(__linux__)
-#define ADVCHAT_QMM_OS             "Linux"
+#define ADVCHAT_QMM_OS              "Linux"
 #ifdef __LP64__
-#define ADVCHAT_QMM_ARCH           "x86_64"
+#define ADVCHAT_QMM_ARCH            "x86_64"
 #else
-#define ADVCHAT_QMM_ARCH           "x86"
+#define ADVCHAT_QMM_ARCH            "x86"
 #endif
 #endif
 
-#define ADVCHAT_QMM_VERSION_DWORD	ADVCHAT_QMM_VERSION_MAJOR , ADVCHAT_QMM_VERSION_MINOR , ADVCHAT_QMM_VERSION_REV , 0
-#define ADVCHAT_QMM_COMPILE		__TIME__ " " __DATE__
-#define ADVCHAT_QMM_BUILDER		"Kevin Masterson"
+#define ADVCHAT_QMM_VERSION_DWORD   ADVCHAT_QMM_VERSION_MAJOR , ADVCHAT_QMM_VERSION_MINOR , ADVCHAT_QMM_VERSION_REV , 0
+#define ADVCHAT_QMM_COMPILE         __TIME__ " " __DATE__
+#define ADVCHAT_QMM_BUILDER         "Kevin Masterson"
 
 #endif // ADVCHAT_QMM_VERSION_H
