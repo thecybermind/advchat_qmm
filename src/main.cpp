@@ -19,19 +19,20 @@ Created By:
 #include <string>
 #include <string.h>
 
-plugin_res* g_result = nullptr;
 plugin_info g_plugininfo = {
-	QMM_PIFV_MAJOR,									// plugin interface version major
-	QMM_PIFV_MINOR,									// plugin interface version minor
-	"AdvChat",										// name of plugin
-	ADVCHAT_QMM_VERSION,							// version of plugin
-	"Advanced Chat Features",						// description of plugin
-	ADVCHAT_QMM_BUILDER,							// author of plugin
-	"https://github.com/thecybermind/qadmin_qmm",	// website of plugin
-	"ADVCHAT",										// logtag of plugin
+    QMM_PIFV_MAJOR,                                 // plugin interface version major
+    QMM_PIFV_MINOR,                                 // plugin interface version minor
+    "AdvChat",                                      // name of plugin
+    ADVCHAT_QMM_VERSION,                            // version of plugin
+    "Advanced Chat Features",                       // description of plugin
+    ADVCHAT_QMM_BUILDER,                            // author of plugin
+    "https://github.com/thecybermind/qadmin_qmm",   // website of plugin
+    "ADVCHAT",                                      // logtag of plugin
 };
 eng_syscall g_syscall = nullptr;
+eng_syscall_args g_syscall_args = nullptr;
 mod_vmMain g_vmMain = nullptr;
+mod_vmMain_args g_vmMain_args = nullptr;
 plugin_funcs* g_pluginfuncs = nullptr;
 plugin_vars* g_pluginvars = nullptr;
 
@@ -49,111 +50,111 @@ int bufindex = 0;
 
 // "safe" strncpy that always null-terminates
 char* strncpyz(char* dest, const char* src, std::size_t count) {
-	char* ret = strncpy(dest, src, count);
-	dest[count - 1] = '\0';
-	return ret;
+    char* ret = strncpy(dest, src, count);
+    dest[count - 1] = '\0';
+    return ret;
 }
 
 
 // scan buf for var, replace with int value
 int replace_var_int(char* buf, intptr_t buflen, const char* var, intptr_t value) {
-	int total = 0;
-	size_t varlen = strlen(var);
+    int total = 0;
+    size_t varlen = strlen(var);
 
-	// check for var token
-	char* replace = strstr(buf, var);
-	// this argument contains at least one token
-	while (replace) {
-		// stop 'buf' from being read past the token
-		*replace = '\0';
+    // check for var token
+    char* replace = strstr(buf, var);
+    // this argument contains at least one token
+    while (replace) {
+        // stop 'buf' from being read past the token
+        *replace = '\0';
 
-		// form new string with the token replaced
-		strncpyz(buf, QMM_VARARGS("%s%d%s", buf, value, replace + varlen), buflen);
-		total++;
+        // form new string with the token replaced
+        strncpyz(buf, QMM_VARARGS("%s%d%s", buf, value, replace + varlen), buflen);
+        total++;
 
-		// look for another token
-		replace = strstr(buf, var);
-	}
-	
-	return total;
+        // look for another token
+        replace = strstr(buf, var);
+    }
+    
+    return total;
 }
 
 
 // scan buf for var, replace with string value
 int replace_var_str(char* buf, intptr_t buflen, const char* var, const char* value) {
-	int total = 0;
-	size_t varlen = strlen(var);
+    int total = 0;
+    size_t varlen = strlen(var);
 
-	// check for var token
-	char* replace = strstr(buf, var);
-	// this argument contains at least one token
-	while (replace) {
-		// stop 'buf' from being read past the token
-		*replace = '\0';
+    // check for var token
+    char* replace = strstr(buf, var);
+    // this argument contains at least one token
+    while (replace) {
+        // stop 'buf' from being read past the token
+        *replace = '\0';
 
-		// form new string with the token replaced
-		strncpyz(buf, QMM_VARARGS("%s%s%s", buf, value, replace + varlen), buflen);
-		total++;
+        // form new string with the token replaced
+        strncpyz(buf, QMM_VARARGS("%s%s%s", buf, value, replace + varlen), buflen);
+        total++;
 
-		// look for another token
-		replace = strstr(buf, var);
-	}
-	
-	return total;
+        // look for another token
+        replace = strstr(buf, var);
+    }
+    
+    return total;
 }
 
 
 int get_player_health() {
 #ifdef GAME_HAS_STAT_HEALTH
-	gclient_t* client = g_sayentity->client;
-	// if QVM, we need to get a real client pointer
-	client = GETPTR(client, gclient_t*);
-	return client ? client->ps.stats[STAT_HEALTH] : 0;
+    gclient_t* client = g_sayentity->client;
+    // if QVM, we need to get a real client pointer
+    client = GETPTR(client, gclient_t*);
+    return client ? client->ps.stats[STAT_HEALTH] : 0;
 #else
-	return g_sayentity->health;
+    return g_sayentity->health;
 #endif
 }
 
 
 #ifndef GAME_NO_ARMOR
 int get_player_armor() {
-	gclient_t* client = g_sayentity->client;
-	// if QVM, we need to get a real client pointer
-	client = GETPTR(client, gclient_t*);
-	return client ? client->ps.stats[STAT_ARMOR] : 0;
+    gclient_t* client = g_sayentity->client;
+    // if QVM, we need to get a real client pointer
+    client = GETPTR(client, gclient_t*);
+    return client ? client->ps.stats[STAT_ARMOR] : 0;
 }
 #endif
 
 
 // single point to do all variable replacements
 int replace_vars(char* buf, intptr_t buflen) {
-	int replaced = 0;
+    int replaced = 0;
 
-	// check for "$h" tokens, replace with health
-	replaced += replace_var_int(buf, buflen, "$h", get_player_health());
+    // check for "$h" tokens, replace with health
+    replaced += replace_var_int(buf, buflen, "$h", get_player_health());
 
 #ifndef GAME_NO_ARMOR
-	// check for "$a" tokens, replace with armor
-	replaced += replace_var_int(buf, buflen, "$a", get_player_armor());
+    // check for "$a" tokens, replace with armor
+    replaced += replace_var_int(buf, buflen, "$a", get_player_armor());
 #endif
 
-	return replaced;
+    return replaced;
 }
 
 
 C_DLLEXPORT void QMM_Query(plugin_info** pinfo) {
-	QMM_GIVE_PINFO();
+    QMM_GIVE_PINFO();
 }
 
 
-C_DLLEXPORT int QMM_Attach(eng_syscall engfunc, mod_vmMain modfunc, plugin_res* presult, plugin_funcs* pluginfuncs, plugin_vars* pluginvars) {
-	QMM_SAVE_VARS();
+C_DLLEXPORT int QMM_Attach(eng_syscall engfunc, eng_syscall_args engfunc_args, mod_vmMain modfunc, mod_vmMain_args modfunc_args, plugin_funcs* pluginfuncs, plugin_vars* pluginvars) {
+    QMM_SAVE_VARS();
 
-	// make sure this DLL is loaded only in the right engine
-	if (strcmp(QMM_GETGAMEENGINE(), GAME_STR) != 0)
-		return 0;
+    // make sure this DLL is loaded only in the right engine
+    if (strcmp(QMM_GETGAMEENGINE(), GAME_STR) != 0)
+        return 0;
 
-	return 1;
+    return 1;
 }
 
 
@@ -161,86 +162,86 @@ C_DLLEXPORT void QMM_Detach() {
 }
 
 
-C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
-	// cancel arg checking if a new command is entered
-	if ((cmd == GAME_CONSOLE_COMMAND || cmd == GAME_CLIENT_COMMAND)) {
-		g_sayentity = nullptr;
-	}
+C_DLLEXPORT intptr_t QMM_vmMain(result_vars* results, intptr_t cmd, intptr_t* args) {
+    // cancel arg checking if a new command is entered
+    if ((cmd == GAME_CONSOLE_COMMAND || cmd == GAME_CLIENT_COMMAND)) {
+        g_sayentity = nullptr;
+    }
 
-	// hook client console commands
-	if (cmd == GAME_CLIENT_COMMAND) {
-		// check what command it is
-		char buf[16];
-		QMM_ARGV(0, buf, sizeof(buf));
+    // hook client console commands
+    if (cmd == GAME_CLIENT_COMMAND) {
+        // check what command it is
+        char buf[16];
+        QMM_ARGV(0, buf, sizeof(buf));
 
-		// player is using a say command, set global flag ("dmmessage" is MOHAA)
-		if (!strncmp(buf, "say", 3) || !strncmp(buf, "dmmessage", 9)) {
-			intptr_t clientNum = args[0];
-			// some engines (quake 2-based games mostly) pass entity pointer to GAME_CLIENT_ messages instead of a number
-			if (clientNum > MAX_CLIENTS)
-				g_sayentity = (gentity_t*)clientNum;
-			else
-				g_sayentity = ENT_FROM_NUM(clientNum);
-		}
-	}
+        // player is using a say command, set global flag ("dmmessage" is MOHAA)
+        if (!strncmp(buf, "say", 3) || !strncmp(buf, "dmmessage", 9)) {
+            intptr_t clientNum = args[0];
+            // some engines (quake 2-based games mostly) pass entity pointer to GAME_CLIENT_ messages instead of a number
+            if (clientNum > MAX_CLIENTS)
+                g_sayentity = (gentity_t*)clientNum;
+            else
+                g_sayentity = ENT_FROM_NUM(clientNum);
+        }
+    }
 
-	QMM_RET_IGNORED(0);
+    QMM_RET_IGNORED(0);
 }
 
 
-C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
-	// store player/entity information
-	if (cmd == G_LOCATE_GAME_DATA) {
-		g_gents = (gentity_t*)args[0];
-		g_gentsize = args[2];
-	}
+C_DLLEXPORT intptr_t QMM_syscall(result_vars* results, intptr_t cmd, intptr_t* args) {
+    // store player/entity information
+    if (cmd == G_LOCATE_GAME_DATA) {
+        g_gents = (gentity_t*)args[0];
+        g_gentsize = args[2];
+    }
 
-	QMM_RET_IGNORED(0);
+    QMM_RET_IGNORED(0);
 }
 
 
-C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
-	// cancel arg checking once the mod is done with command-handling
-	if ((cmd == GAME_CONSOLE_COMMAND || cmd == GAME_CLIENT_COMMAND)) {
-		g_sayentity = nullptr;
-	}
+C_DLLEXPORT intptr_t QMM_vmMain_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
+    // cancel arg checking once the mod is done with command-handling
+    if ((cmd == GAME_CONSOLE_COMMAND || cmd == GAME_CLIENT_COMMAND)) {
+        g_sayentity = nullptr;
+    }
 
-	QMM_RET_IGNORED(0);
+    QMM_RET_IGNORED(0);
 }
 
 
-C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
-	// this is the main workhorse
-	// whenever the mod calls G_ARGV/G_ARGS for a say command, this checks the returned buffer for
-	// the existence of a replacable token (like "$h") and then replaces all instances of them
-	if ((cmd == G_ARGV || cmd == G_ARGS) && g_sayentity) {
+C_DLLEXPORT intptr_t QMM_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
+    // this is the main workhorse
+    // whenever the mod calls G_ARGV/G_ARGS for a say command, this checks the returned buffer for
+    // the existence of a replacable token (like "$h") and then replaces all instances of them
+    if ((cmd == G_ARGV || cmd == G_ARGS) && g_sayentity) {
 // for games where G_ARGV fills a mod-given buffer, just replace vars in-place and return
 #ifndef GAME_ARGV_RETURN
-		if (cmd == G_ARGV) {
-			char* buf = (char*)args[1];
-			intptr_t buflen = args[2];
+        if (cmd == G_ARGV) {
+            char* buf = (char*)args[1];
+            intptr_t buflen = args[2];
 
-			replace_vars(buf, buflen);
-			QMM_RET_IGNORED(0);
-		}
+            replace_vars(buf, buflen);
+            QMM_RET_IGNORED(0);
+        }
 #endif
-		// this engine returns a buffer to the mod, so we have to use our own.
-		// cycle rotating buffer and clear string
-		bufindex = (bufindex + 1) % NUM_BUFFERS;
-		char* buf = buffers[bufindex];
-		intptr_t buflen = sizeof(buffers[bufindex]);
-		memset(buf, 0, buflen);
+        // this engine returns a buffer to the mod, so we have to use our own.
+        // cycle rotating buffer and clear string
+        bufindex = (bufindex + 1) % NUM_BUFFERS;
+        char* buf = buffers[bufindex];
+        intptr_t buflen = sizeof(buffers[bufindex]);
+        memset(buf, 0, buflen);
 
-		// get return value for this call
-		strncpyz(buf, QMM_VAR_RETURN(char*), buflen);
+        // get return value for this call
+        strncpyz(buf, QMM_VAR_REAL_RETURN(char*), buflen);
 
-		// if we didn't change anything, ignore and let the engine return its own buffer
-		if (!replace_vars(buf, buflen))
-			QMM_RET_IGNORED(0);
+        // if we didn't change anything, ignore and let the engine return its own buffer
+        if (!replace_vars(buf, buflen))
+            QMM_RET_IGNORED(0);
 
-		// we did change something, so we need to return our buffer to the mod
-		QMM_RET_OVERRIDE((intptr_t)buf);
-	}
+        // we did change something, so we need to return our buffer to the mod
+        QMM_RET_OVERRIDE((intptr_t)buf);
+    }
 
-	QMM_RET_IGNORED(0);
+    QMM_RET_IGNORED(0);
 }
