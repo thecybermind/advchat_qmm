@@ -1,11 +1,11 @@
-# Advchat_QMM
-ADVCHAT_QMM - Advanced Chat Plugin
+# AdvChat
+AdvChat - Advanced Chat Plugin  
 Copyright 2004-2026  
 https://github.com/thecybermind/advchat_qmm/  
 3-clause BSD license: https://opensource.org/license/bsd-3-clause  
-
-Created By: Kevin Masterson < k.m.masterson@gmail.com >
-
+  
+Created By: Kevin Masterson < k.m.masterson@gmail.com >  
+  
 ---
 
 1. Install QMM ( https://github.com/thecybermind/qmm2/wiki/Installation )
